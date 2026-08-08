@@ -11,12 +11,13 @@ const EMPTY = Object.freeze([]);
 const PT_DAYS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 const PT_DAYS_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTHS = [
+  { name: "Agosto", short: "Ago", idx: 7 },
+  { name: "Setembro", short: "Set", idx: 8 },
   { name: "Maio", short: "Mai", idx: 4 },
   { name: "Junho", short: "Jun", idx: 5 },
   { name: "Julho", short: "Jul", idx: 6 },
-  { name: "Agosto", short: "Ago", idx: 7 },
-  { name: "Setembro", short: "Set", idx: 8 },
 ];
+const FUTURE_MONTHS_COUNT = 2; // Agosto e Setembro aparecem antes do Relógio de Oração
 const PERIODS = [
   { id: "manha", label: "Manhã", Icon: Sun, time: "6h–12h" },
   { id: "tarde", label: "Tarde", Icon: Sunset, time: "12h–18h" },
@@ -577,19 +578,29 @@ export default function App() {
       <section className="max-w-5xl mx-auto px-6 pb-6" ref={calendarSectionRef}>
         <div className="bg-white border border-stone-200 rounded-2xl p-2 shadow-sm overflow-x-auto">
           <div className="flex items-center gap-1 min-w-max">
-            {MONTHS.map((m, i) => (
+            {MONTHS.slice(0, FUTURE_MONTHS_COUNT).map((m, i) => (
               <button key={i} onClick={() => { setTab("calendar"); setMonth(i); }}
                 className={`px-3 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${tab === "calendar" && month === i ? "bg-stone-900 text-white" : "text-stone-600 hover:bg-stone-100"}`}>
                 <span className="sm:hidden">{m.short}</span>
                 <span className="hidden sm:inline">{m.name}</span>
               </button>
             ))}
-            <div className="w-px h-7 bg-stone-200 mx-1 flex-shrink-0" />
             <button onClick={() => setTab("clock")}
               className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-colors flex-shrink-0 ${tab === "clock" ? "bg-stone-900 text-white" : "text-stone-600 hover:bg-stone-100"}`}>
               <Clock className="w-4 h-4" />
               <span>Relógio de Oração</span>
             </button>
+            <div className="w-px h-7 bg-stone-200 mx-1 flex-shrink-0" />
+            {MONTHS.slice(FUTURE_MONTHS_COUNT).map((m, i) => {
+              const realIdx = i + FUTURE_MONTHS_COUNT;
+              return (
+                <button key={realIdx} onClick={() => { setTab("calendar"); setMonth(realIdx); }}
+                  className={`px-3 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-colors ${tab === "calendar" && month === realIdx ? "bg-stone-900 text-white" : "text-stone-600 hover:bg-stone-100"}`}>
+                  <span className="sm:hidden">{m.short}</span>
+                  <span className="hidden sm:inline">{m.name}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
